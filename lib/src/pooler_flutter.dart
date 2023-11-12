@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
@@ -125,15 +124,8 @@ class PoolerCheckoutViewState extends State<PoolerCheckoutView> {
         /// Show error view
         if (hasError == true) {
           return Center(
-              child: widget
-                  .errorWidget /*  ??
-                ThePeerErrorView(
-                  onClosed: widget.onClosed,
-                  reload: () async {
-                    await (await _webViewController).reload();
-                  },
-                ), */
-              );
+            child: widget.errorWidget ?? const Text('An error occured'),
+          );
         }
 
         return Stack(
@@ -159,14 +151,10 @@ class PoolerCheckoutViewState extends State<PoolerCheckoutView> {
     );
   }
 
-  /// Inject JS code to be run in webview
-  Future<void> _injectJSEventListener() async {
-    //controller.runJavaScript('console.log(document.documentElement.outerHTML)');
-  }
-
   /// Handle WebView initialization
   void _handleInit() async {
-    await SystemChannels.textInput.invokeMethod<String>('TextInput.hide');
+    PoolerLogger.showLogs = widget.showLogs;
+    await _hideTextInput();
     controller
       ..loadHtmlString(
         PoolerFunctions.createWidgetHtml(
@@ -184,7 +172,7 @@ class PoolerCheckoutViewState extends State<PoolerCheckoutView> {
           try {
             _handleResponse(rawData);
           } catch (e) {
-            print(e.toString());
+            PoolerLogger.e(e);
           }
         },
       )
@@ -193,35 +181,22 @@ class PoolerCheckoutViewState extends State<PoolerCheckoutView> {
           onPageStarted: (_) async {
             isLoading = true;
           },
-          onWebResourceError: (e) {
-            print(e.toString());
-          },
-          onProgress: (v) {
-            loadingPercent = v;
-          },
-          onPageFinished: (_) async {
-            isLoading = false;
-            await _injectJSEventListener();
-          },
-          onNavigationRequest: (req) async {
-            final url = req.url.toLowerCase();
-            /*  if (widget.onUrlChange != null) {
-              widget.onUrlChange!(url);
-            } */
-
-            print(url);
-            return NavigationDecision.navigate;
-          },
+          onWebResourceError: (e) => PoolerLogger.e(e),
+          onProgress: (v) => loadingPercent = v,
+          onPageFinished: (_) async => isLoading = false,
+          onNavigationRequest: (req) => NavigationDecision.navigate,
         ),
       )
-      ..setUserAgent(
-          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36')
+      ..setUserAgent(USER_AGENT)
       ..setJavaScriptMode(JavaScriptMode.unrestricted);
   }
 
+  Future<void> _hideTextInput() async =>
+      SystemChannels.textInput.invokeMethod<String>('TextInput.hide');
+
   void _handleResponse(String message) {
-    print(message);
     try {
+      PoolerLogger.log(message);
       final data = json.decode(message) as Map<String, dynamic>;
       final action = data['action'] as String? ?? '';
       switch (action) {
@@ -239,7 +214,7 @@ class PoolerCheckoutViewState extends State<PoolerCheckoutView> {
           return;
       }
     } catch (e) {
-      log(e.toString());
+      PoolerLogger.e(e);
     }
   }
 }

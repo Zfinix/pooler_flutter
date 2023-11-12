@@ -5,6 +5,7 @@ import 'package:pooler_flutter/src/config/config.dart';
 const WIDGET_SUCCESS = 'widget.success';
 const WIDGET_ERROR = 'widget.server_error';
 const WIDGET_CLOSE = 'closeIframe';
+const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36';
 
 class PoolerFunctions {
   static const eventHandler = 'JuicePaymentEventJSChannel';
