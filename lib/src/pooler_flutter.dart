@@ -20,7 +20,7 @@ class PoolerCheckoutView extends StatefulWidget {
   /// Error callback
   final ValueChanged<dynamic>? onError;
 
-  /// Thepeer popup Close callback
+  /// Popup Close callback
   final VoidCallback? onClosed;
 
   /// Error Widget will show if loading fails

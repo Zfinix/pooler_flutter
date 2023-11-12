@@ -31,7 +31,7 @@ class PoolerConfig with EquatableMixin {
   /// Your public key an be found on your dashboard settings
   final String publicKey;
 
-  /// The user reference returned by the Thepeer API when a user has been indexed
+  /// Current transaction reference
   final String transactionReference;
 
   /// The amount you intend to send and must be pass as an integer in kobo
