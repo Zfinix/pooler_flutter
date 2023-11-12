@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <base href="/">
+
+    <meta charset="UTF-8">
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+    <meta name="description" content="A Very Good new Flutter project.">
+
+    <title>Juice</title>
+    <script src="https://js.poolerapp.com/v1/inline.js"></script>
+</head>
+
+<body onload="startPoolerPopup()">
+
+    <script type="text/javascript">
+
+        // Add EventListener for onMessage Event
+        window.addEventListener('message', (event) => {
+            sendMessage(event.data)
+        });
+
+        // Override default JS Console function
+        console._log_old = console.log
+        console.log = function (msg) {
+            sendMessageRaw(msg);
+            console._log_old(msg);
+        }
+
+        console._error_old = console.error
+        console.error = function (msg) {
+            sendMessageRaw(msg);
+            console._error_old(msg);
+        }
+
+        // Send callback to dart JSMessageClient
+        function sendMessage(message) {
+            if (window.JuicePaymentEventJSChannel && window.JuicePaymentEventJSChannel.postMessage) {
+                JuicePaymentEventJSChannel.postMessage(JSON.stringify(message));
+            }
+        }
+
+        // Send raw callback to dart JSMessageClient
+        function sendMessageRaw(message) {
+            if (window.JuicePaymentEventJSChannel && window.JuicePaymentEventJSChannel.postMessage) {
+                JuicePaymentEventJSChannel.postMessage(message);
+            }
+        }
+
+        window.onload = startPoolerPopup;
+        function startPoolerPopup() {
+            const developerConfig = {
+                email: "chiziaruhoma@gmaiul.com",
+                amount: 400000,
+                pub_key: "pb_test_40291a0c6bbc66f64875de067c8fb05b4c5c2c544cd3af9ee730ba947407df21",
+                redirect_link: "https://google.com",
+                transaction_reference: "73f03de5-1043-86489488"
+            };
+            Pooler.Popup({ ...developerConfig });
+        };
+
+    </script>
+    <script type="text/javascript">
+        window.addEventListener("message", function (e) {
+           console.log(e.data)
+        });
+
+    </script>
+</body>
+
+</html>
