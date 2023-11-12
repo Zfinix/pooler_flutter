@@ -1,6 +1,7 @@
 name: pooler_flutter
 description: Unofficial Pooler Flutter SDK
 version: 1.0.0
+repository: https://github.com/zfinix/pooler_flutter
 
 
 environment:
